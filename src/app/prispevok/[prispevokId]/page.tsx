@@ -3,10 +3,15 @@ import Typography from '@mui/material/Typography';
 
 export const metadata = {title: "detail prispevkov | ZoskaSnap"};
 
-export default function PostDetail() {
+export default function PostDetail({
+  params,}:{
+    params:{prispevokId:string}
+  }
+
+) {
   return (
     
-      <Typography > detail prispevkov </Typography>
+      <Typography > detail prispevkov : {params.prispevokId}</Typography>
     
   );
   

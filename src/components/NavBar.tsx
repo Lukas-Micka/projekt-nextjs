@@ -1,7 +1,7 @@
 // src/components/NavBar.tsx
 
 
-// /src/components/Navbar.tsx
+
 
 "use client";
 
@@ -24,11 +24,12 @@ export default function Navbar() {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%'}}>
       <BottomNavigation
         showLabels
         value={value}
         onChange={handleNavigation}
+        sx = {{bottom:0 }} 
       >
         <BottomNavigationAction label="Domov" value="/" icon={<HomeIcon />} />
         <BottomNavigationAction label="Profily" value="/profil" icon={<AccountCircleIcon />} />
