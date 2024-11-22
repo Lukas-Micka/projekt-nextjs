@@ -7,3 +7,8 @@ npm install @mui/material @emotion/react @emotion/styled
 https://github.com/Lukas-Micka/prvyprojekt.git
 cd ..
 
+Next.js 14.2 App router
+authentification: NextAuth
+production/deploy server: Vercel
+database: PostgreSQL on Vercel
+UI: Material UI, Material icons
