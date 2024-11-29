@@ -12,3 +12,9 @@ authentification: NextAuth
 production/deploy server: Vercel
 database: PostgreSQL on Vercel
 UI: Material UI, Material icons
+
+4. VsCode terminal:
+    npx prisma format
+    npx prisma migrate dev --name init
+    npx prisma generate
+    npx prisma studio
