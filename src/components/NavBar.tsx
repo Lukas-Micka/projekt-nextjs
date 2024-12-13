@@ -1,97 +1,100 @@
-"use client"; // Add this line
+"use client";
 
-import React from 'react';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import HomeIcon from '@mui/icons-material/Home';
-import PostAddIcon from '@mui/icons-material/PostAdd';
-import LoginIcon from '@mui/icons-material/Login';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import LogoutIcon from '@mui/icons-material/Logout'; // Import for logout icon
-import Avatar from '@mui/material/Avatar'; // Import for avatar
-import { useRouter } from 'next/navigation'; // Updated import
-import { useSession, signOut } from 'next-auth/react'; // Import from next-auth
+import React from "react";
+import { BottomNavigation, BottomNavigationAction, Avatar } from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
+import SearchIcon from "@mui/icons-material/Search";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import InfoIcon from "@mui/icons-material/Info";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
-export default function NavBar() {
+const NavBar = () => {
   const [value, setValue] = React.useState(0);
   const router = useRouter();
-  const { data: session } = useSession(); // Access session data
+  const { data: session } = useSession();
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleNavigation = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
 
-    switch (newValue) {
-      case 0:
-        router.push('/');
-        break;
-      case 1:
-        if (session) {
-          router.push('/profil'); // Only navigate to "Profily" if the user is signed in
-        }
-        break;
-      case 2:
-        router.push('/prispevok');
-        break;
-      case 3:
-        if (session) {
-          signOut(); // Sign out the user
-        } else {
-          router.push('/auth/prihlasenie'); // Go to Sign In
-        }
-        break;
-      case 4:
-        if (!session) {
-          router.push('/auth/registracia'); // Go to Register if not signed in
-        }
-        break;
-      default:
-        break;
+    if (session) {
+      // Signed-in user navigation
+      switch (newValue) {
+        case 0:
+          router.push("/"); // Home
+          break;
+        case 1:
+          router.push("/hladanie"); // Search
+          break;
+        case 2:
+          router.push("/prispevok"); // Add Post
+          break;
+        case 3:
+          router.push("/profil"); // Profile
+          break;
+        case 4:
+          router.push("/auth/odhlasenie"); // Sign Out
+          break;
+        default:
+          break;
+      }
+    } else {
+      // Signed-out user navigation
+      switch (newValue) {
+        case 0:
+          router.push("/"); // Home
+          break;
+        case 1:
+          router.push("/o-mne"); // About Me
+          break;
+        case 2:
+          router.push("/auth/registracia"); // Sign Up
+          break;
+        case 3:
+          router.push("/auth/prihlasenie"); // Sign In
+          break;
+        default:
+          break;
+      }
     }
   };
 
-  return (
-    <BottomNavigation
-      sx={{
-        width: '100%',
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000, // Ensure it's above other components
-      }}
-      value={value}
-      onChange={handleChange}
-    >
-      <BottomNavigationAction label="Domov" icon={<HomeIcon />} />
-
-      {/* Show "Profily" with Google profile picture if signed in */}
-      {session && (
+  const navigationActions = session
+    ? [
+        <BottomNavigationAction key="home" label="Domov" icon={<HomeIcon />} />,
+        <BottomNavigationAction key="search" label="Hľadať" icon={<SearchIcon />} />,
+        <BottomNavigationAction key="add" label="Pridať" icon={<AddCircleIcon />} />,
         <BottomNavigationAction
-          label="Profily"
+          key="profile"
+          label="Profil"
           icon={
-            <Avatar 
-              src={session.user?.image || '/default-profile.png'} // Use Google profile image or fallback
-              alt="Profile"
+            <Avatar
+              alt={session.user?.name || "User"}
+              src={session.user?.image || ""}
               sx={{ width: 24, height: 24 }}
             />
           }
-        />
-      )}
+        />,
+        <BottomNavigationAction key="logout" label="Odhlásiť" icon={<ExitToAppIcon />} />,
+      ]
+    : [
+        <BottomNavigationAction key="home" label="Domov" icon={<HomeIcon />} />,
+        <BottomNavigationAction key="about" label="O Mne" icon={<InfoIcon />} />,
+        <BottomNavigationAction key="signup" label="Registrácia" icon={<ExitToAppIcon />} />,
+        <BottomNavigationAction key="signin" label="Prihlásenie" icon={<ExitToAppIcon />} />,
+      ];
 
-      <BottomNavigationAction label="Prispevky" icon={<PostAddIcon />} />
-
-      {/* Show Sign In or Sign Out based on session state */}
-      {session ? (
-        <BottomNavigationAction label="Odhlásenie" icon={<LogoutIcon />} />
-      ) : (
-        <BottomNavigationAction label="Prihlásenie" icon={<LoginIcon />} />
-      )}
-
-      {/* Show Register only if not signed in */}
-      {!session && <BottomNavigationAction label="Registrácia" icon={<HowToRegIcon />} />}
+  return (
+    <BottomNavigation
+      value={value}
+      onChange={handleNavigation}
+      showLabels
+      sx={{ position: "fixed", bottom: 0, width: "100%" }}
+    >
+      {navigationActions}
     </BottomNavigation>
   );
-}
+};
 
-
-
+export default NavBar;
